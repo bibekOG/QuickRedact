@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Redact | Professional Screenshot Masking Tool</title>
+    <meta name="description" content="Instantly remove sensitive information from images. Professional masking tool that works 100% locally in your browser." />
+    
+    <!-- Google Fonts: Space Grotesk and Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="#home" class="nav-logo">
+          <svg class="logo-icon-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2L3 8L14 14L25 8L14 2Z" fill="#4f46e5" />
+            <path d="M3 13L14 19L25 13" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 18L14 24L25 18" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span class="logo-text"><span class="brand-bold">quick</span><span class="brand-light">redact</span></span>
+        </a>
+        
+        <div class="nav-links">
+          <a href="#uploads" class="nav-link-item">Remove Data</a>
+          <a href="#how-to" class="nav-link-item">How to use</a>
+          <a href="#about" class="nav-link-item">About us</a>
+          <a href="#" id="nav-bulk-btn" class="nav-link-item">Bulk Redact</a>
+          <a href="#" id="nav-api-btn" class="nav-link-item">Developer API</a>
+          <a href="#" id="nav-pricing-btn" class="nav-link-item">Pricing</a>
+        </div>
+
+        <div class="nav-right-section">
+          <a href="#" id="nav-login-btn" class="nav-login-btn">Log In</a>
+          <a href="#" id="nav-signup-btn" class="nav-signup-btn">Sign Up</a>
+        </div>
+      </div>
+    </nav>
+
+    <div id="app">
+      <!-- Home Section / Hero -->
+      <section id="home" class="view active">
+        <div class="hero-container">
+          <div class="hero-content">
+            <div class="hero-image-wrapper">
+              <img src="/hero-main.png" alt="Privacy-focused redaction" class="hero-main-img">
+            </div>
+            <h1 class="hero-title">Redact Image <br><span>Data</span></h1>
+            <div class="hero-badge-row">
+              <span class="text">100% Automatically and</span>
+              <span class="badge-free">Free</span>
+            </div>
+          </div>
+          
+          <div class="hero-tool">
+            <div id="hero-editor-container" class="editor-glass">
+              <div id="hero-drop-zone" class="drop-zone">
+                <div class="drop-content">
+                  <h2 class="drop-title">Upload an image to <br>redact sensitive data</h2>
+                  
+                  <button id="hero-file-trigger" class="btn btn-upload">
+                    Upload Image
+                  </button>
+                  
+                  <div class="drop-text">
+                    <p class="main-text">or drop a file,</p>
+                    <p class="sub-text">paste image or <span class="link">URL</span></p>
+                  </div>
+                </div>
+              </div>
+              <canvas id="hero-canvas" class="hidden"></canvas>
+              <div id="hero-selection-overlay" class="hidden"></div>
+            </div>
+
+            <div class="hero-footer-content">
+              <div class="try-section">
+                <div class="try-text">
+                  <p>No image? Try one of these:</p>
+                </div>
+                <div class="try-samples">
+                  <img src="https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?w=100&h=100&fit=crop" alt="Sample 1" class="sample-img">
+                  <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop" alt="Sample 2" class="sample-img">
+                  <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=100&h=100&fit=crop" alt="Sample 3" class="sample-img">
+                  <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=100&h=100&fit=crop" alt="Sample 4" class="sample-img">
+                </div>
+              </div>
+
+              <div class="terms-hint">
+                <p>By uploading an image or URL you agree to our <a href="#">Terms of Service</a>. To learn more about how remove.bg handles your personal data, check our <a href="#">Privacy Policy</a>.</p>
+              </div>
+            </div>
+            <input type="file" id="file-input" accept="image/*" class="hidden">
+
+            <!-- Hero Specific Controls (Visible after upload in hero) -->
+            <div id="hero-controls" class="controls hidden">
+              <div id="hero-tool-selector" class="control-group">
+                <button class="btn btn-icon-only active" data-tool="pixelate" title="Pixelate (P)">
+                  <span>⬛</span>
+                </button>
+                <button class="btn btn-icon-only" data-tool="blur" title="Blur (B)">
+                  <span>💧</span>
+                </button>
+                <button class="btn btn-icon-only" data-tool="solid" title="Solid Color (S)">
+                  <span>🔳</span>
+                </button>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="control-group">
+                <button id="hero-undo-btn" class="btn btn-icon-only" title="Undo (Ctrl+Z)">
+                  <span>↩️</span>
+                </button>
+                <button id="hero-redo-btn" class="btn btn-icon-only" title="Redo (Ctrl+Y)">
+                  <span>↪️</span>
+                </button>
+              </div>
+            </div>
+            <input type="file" id="hero-file-input" accept="image/*" class="hidden">
+          </div>
+        </div>
+      </section>
+
+      <!-- Uploads Section (Standalone Centered Tool) -->
+      <section id="uploads" class="view">
+        <div class="standalone-upload-wrapper">
+          
+          <!-- Left Presentation Column -->
+          <div class="standalone-hero-content">
+            <div class="premium-badge">✨ Local & Secure</div>
+            <h2 class="standalone-title">Mask sensitive data <br><span>in seconds</span></h2>
+            <div class="standalone-features">
+              <div class="feature-bullet">
+                <div class="feature-bullet-icon">🔒</div>
+                <div class="feature-bullet-text">
+                  <h4>100% Client-Side</h4>
+                  <p>All redacting happens inside your browser. Your images are never sent to a server.</p>
+                </div>
+              </div>
+              <div class="feature-bullet">
+                <div class="feature-bullet-icon">🤖</div>
+                <div class="feature-bullet-text">
+                  <h4>AI Smart Scan</h4>
+                  <p>Automatically detect and pixelate names, credit cards, faces, and phone numbers.</p>
+                </div>
+              </div>
+              <div class="feature-bullet">
+                <div class="feature-bullet-icon">⚡</div>
+                <div class="feature-bullet-text">
+                  <h4>Lightning Fast</h4>
+                  <p>Drag, drop, paste, or upload. Edit and copy your result back in one swift action.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Uploader Column -->
+          <div class="standalone-right-col">
+            <div id="editor-container" class="editor-glass standalone-glass">
+              <div id="drop-zone" class="drop-zone">
+                <div class="drop-content">
+                  <button id="file-trigger" class="btn btn-upload btn-xl">
+                    Upload Image
+                  </button>
+                  
+                  <div class="drop-text">
+                    <p class="main-text">or drop a file,</p>
+                    <p class="sub-text">paste image or <span class="link">URL</span></p>
+                  </div>
+                </div>
+              </div>
+              <canvas id="canvas" class="hidden"></canvas>
+              <div id="selection-overlay" class="hidden"></div>
+              <div id="canva-overlay-btn" class="hidden">
+                <span class="canva-icon">C</span> Edit in Canva
+              </div>
+            </div>
+
+            <div class="standalone-footer">
+              <div class="try-section">
+                <p class="try-text">No image? Try one of these:</p>
+                <div class="try-samples">
+                  <img src="https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?w=100&h=100&fit=crop" alt="Sample 1" class="sample-img">
+                  <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop" alt="Sample 2" class="sample-img">
+                  <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=100&h=100&fit=crop" alt="Sample 3" class="sample-img">
+                  <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=100&h=100&fit=crop" alt="Sample 4" class="sample-img">
+                </div>
+              </div>
+
+              <div class="terms-hint">
+                <p>By uploading an image or URL you agree to our <a href="#">Terms of Service</a>. To learn more about how QuickRedact handles your personal data, check our <a href="#">Privacy Policy</a>.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+          <!-- Main Controls -->
+          <div id="controls" class="controls hidden canva-toolbar">
+            <div id="tool-selector" class="control-group">
+              <button class="btn btn-tool active" data-tool="pixelate" title="Pixelate (P)">
+                <span class="icon">🪄</span> <span class="label">Pixelate</span>
+              </button>
+              <button class="btn btn-tool" data-tool="blur" title="Blur (B)">
+                <span class="icon">🖼️</span> <span class="label">Blur</span>
+              </button>
+              <button class="btn btn-tool" data-tool="solid" title="Solid Color (S)">
+                <span class="icon">✨</span> <span class="label">Solid</span>
+              </button>
+              <button id="agent-scan-btn" class="btn btn-tool btn-premium-scan" title="AI Auto-Scan (A)">
+                <span class="icon">🤖</span> <span class="label">AI Scan</span>
+              </button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="control-group slider-group">
+              <span class="slider-label">Intensity</span>
+              <input type="range" id="intensity-range" min="5" max="50" value="20" class="intensity-slider">
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="control-group">
+              <button id="undo-btn" class="btn btn-icon-only" title="Undo (Ctrl+Z)">
+                <span>↩️</span>
+              </button>
+              <button id="redo-btn" class="btn btn-icon-only" title="Redo (Ctrl+Y)">
+                <span>↪️</span>
+              </button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="action-group">
+              <button id="copy-btn" class="btn btn-secondary btn-pill" title="Copy to Clipboard (Ctrl+C)">
+                <span>Copy</span> <span>📋</span>
+              </button>
+              <button id="download-btn" class="btn btn-primary btn-pill" title="Download PNG">
+                Download <span class="chevron">⌄</span>
+              </button>
+              <button id="reset-btn" class="btn btn-danger-outline btn-pill" title="Clear Canvas (Esc)">
+                <span>Clear</span> <span>🧹</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="thumbnail-strip" class="hidden">
+            <button class="btn-add-thumb"><span>+</span></button>
+            <div class="thumb-item active">
+              <img id="thumb-img" src="" alt="Thumbnail">
+            </div>
+          </div>
+          <input type="file" id="file-input" accept="image/*" class="hidden">
+        </div>
+      </section>
+
+      <!-- How to Use Section -->
+      <section id="how-to" class="view">
+        <div class="section-container">
+          <div class="section-header">
+            <h2>How to Use <span>Quick Redact</span></h2>
+            <p>Master the art of screenshot masking in 3 simple steps.</p>
+          </div>
+          
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-num">01</div>
+              <h3>Import Your Image</h3>
+              <p>Drag and drop your file, click the upload button, or simply press <strong>Ctrl+V</strong> to paste a screenshot directly from your clipboard.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">02</div>
+              <h3>Select & Redact</h3>
+              <p>Click and drag over sensitive areas. You can move, resize, and adjust the intensity of the blur until it's perfect.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-num">03</div>
+              <h3>Export Instantly</h3>
+              <p>Copy the redacted image back to your clipboard or download it as a high-quality PNG. Your data never leaves your device.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="view">
+        <div class="section-container">
+          <div class="about-grid">
+            <div class="about-text">
+              <h2>The Privacy-First <span>Utility</span></h2>
+              <p>Quick Redact was built with one goal in mind: to make data protection accessible and effortless for everyone.</p>
+              <p>In an age where sharing screenshots is second nature, we often accidentally leak passwords, bank details, or private conversations. Traditional editing tools are either too slow or require uploading your sensitive files to a cloud server.</p>
+              <p><strong>Quick Redact is different.</strong> All processing happens locally in your browser. We never see your images, and we never store your data. It's masking as it should be: professional, precise, and private.</p>
+            </div>
+            <div class="about-image">
+              <div class="feature-box">
+                <h4>Core Technology</h4>
+                <ul>
+                  <li>Canvas API for fast local processing</li>
+                  <li>Client-side Image Rendering</li>
+                  <li>No-Server Architecture</li>
+                  <li>Zero Tracking Policy</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-brand">
+          <a href="#home" class="footer-logo">✂️ Quick<span>Redact</span></a>
+          <p>The smartest way to redact screenshots. Professional, precise, and private by design.</p>
+        </div>
+        <div class="footer-links-group">
+          <div class="footer-links">
+            <h4>Product</h4>
+            <a href="#home">Home</a>
+            <a href="#uploads">Editor</a>
+            <a href="#how-to">How to Use</a>
+            <a href="#about">About</a>
+          </div>
+          <div class="footer-links">
+            <h4>Legal</h4>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-bottom-container">
+          <p>&copy; 2026 QuickRedact. All rights reserved. Made with ❤️ for privacy.</p>
+          <div class="footer-socials">
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="GitHub">🐙</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- SaaS Hub Modal Overlay -->
+    <div id="saas-hub-modal" class="modal-overlay hidden">
+      <div class="modal-card glassmorphism">
+        <button id="modal-close-btn" class="modal-close-btn" title="Close Dialog">✕</button>
+        
+        <div class="modal-sidebar">
+          <div class="modal-logo">
+            <svg class="logo-icon-svg" width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 2L3 8L14 14L25 8L14 2Z" fill="#4f46e5" />
+              <path d="M3 13L14 19L25 13" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M3 18L14 24L25 18" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="logo-text"><span class="brand-bold">quick</span><span class="brand-light">redact</span></span>
+          </div>
+          <div class="modal-tabs-list">
+            <button class="modal-tab-trigger active" data-tab="bulk">
+              <span class="tab-icon">🗂️</span> Bulk Editing
+            </button>
+            <button class="modal-tab-trigger" data-tab="api">
+              <span class="tab-icon">🔌</span> Developer API
+            </button>
+            <button class="modal-tab-trigger" data-tab="plugins">
+              <span class="tab-icon">🧩</span> Plugins & Exts
+            </button>
+            <button class="modal-tab-trigger" data-tab="pricing">
+              <span class="tab-icon">💎</span> Premium Pricing
+            </button>
+            <div class="sidebar-divider"></div>
+            <button class="modal-tab-trigger" data-tab="auth-login" id="modal-sidebar-login">
+              <span class="tab-icon">🔑</span> Log In
+            </button>
+            <button class="modal-tab-trigger" data-tab="auth-signup" id="modal-sidebar-signup">
+              <span class="tab-icon">✨</span> Sign Up
+            </button>
+          </div>
+        </div>
+        
+        <div class="modal-content-wrapper">
+          <!-- 1. Bulk Editing Tab -->
+          <div class="modal-tab-content active" id="tab-content-bulk">
+            <span class="badge-premium">PRO FEATURE</span>
+            <h2>Bulk Screenshot Redaction</h2>
+            <p class="tab-subtitle">Mask dozens of files simultaneously with custom pipelines and local AI scan acceleration.</p>
+            
+            <div class="bulk-promo-card">
+              <div class="promo-preview">
+                <div class="pipeline-node">📂 Folder Upload</div>
+                <div class="pipeline-arrow">➔</div>
+                <div class="pipeline-node node-active">🤖 AI Smart Filter</div>
+                <div class="pipeline-arrow">➔</div>
+                <div class="pipeline-node">💾 Batch Export</div>
+              </div>
+              <ul class="benefit-bullets">
+                <li>✨ <strong>Parallel Canvas workers</strong> process files at up to 60fps</li>
+                <li>🎯 Define regex patterns for custom name/ID masks</li>
+                <li>📦 Export directly to ZIP or local desktop directories</li>
+              </ul>
+            </div>
+            
+            <button class="btn btn-primary modal-action-btn" id="bulk-try-btn">Unlock Bulk Editing (Start Free Trial)</button>
+          </div>
+          
+          <!-- 2. API Tab -->
+          <div class="modal-tab-content" id="tab-content-api">
+            <span class="badge-developer">DEVELOPER</span>
+            <h2>Restful Redaction API</h2>
+            <p class="tab-subtitle">Integrate secure, GDPR-compliant local-equivalent masking directly into your CI/CD or server pipelines.</p>
+            
+            <div class="api-code-block">
+              <pre><code>curl -X POST https://api.quickredact.com/v1/redact \
+  -H "Authorization: Bearer qr_live_..." \
+  -F "image=@screenshot.png" \
+  -F "mode=pixelate" \
+  -F "targets=credit_cards,names,phones"</code></pre>
+            </div>
+            
+            <div class="api-key-sandbox">
+              <div class="sandbox-input-row">
+                <input type="text" readonly value="qr_live_68f8b8e0e7a2b6d5c4e3f210a9b8" class="sandbox-key-field" id="sandbox-key-field">
+                <button class="btn btn-secondary btn-compact" id="copy-api-key-btn">Copy Key</button>
+              </div>
+              <p class="sandbox-tip">💡 Rate Limit: 10,000 requests/month included in standard developer key tier.</p>
+            </div>
+          </div>
+          
+          <!-- 3. Plugins Tab -->
+          <div class="modal-tab-content" id="tab-content-plugins">
+            <span class="badge-integrations">INTEGRATIONS</span>
+            <h2>Browser & Design Integrations</h2>
+            <p class="tab-subtitle">Redact elements directly where you work—without leaving your canvas or active web browser window.</p>
+            
+            <div class="integrations-grid">
+              <div class="integration-card">
+                <div class="int-icon">🌐</div>
+                <h4>Chrome / Edge</h4>
+                <p>One-click element masking before capturing screenshots.</p>
+                <button class="btn btn-secondary btn-sm" id="install-chrome-btn">Add to Chrome</button>
+              </div>
+              <div class="integration-card">
+                <div class="int-icon">🎨</div>
+                <h4>Figma Plugin</h4>
+                <p>Anonymize user mockups and wireframes in one second.</p>
+                <button class="btn btn-secondary btn-sm" id="install-figma-btn">Install Plugin</button>
+              </div>
+              <div class="integration-card">
+                <div class="int-icon">💬</div>
+                <h4>Slack & Teams</h4>
+                <p>Auto-pixelate shared screenshots inside company chat groups.</p>
+                <button class="btn btn-secondary btn-sm" id="install-slack-btn">Add App</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 4. Pricing Tab -->
+          <div class="modal-tab-content" id="tab-content-pricing">
+            <span class="badge-pricing">UPGRADES</span>
+            <h2>Choose Your Privacy Tier</h2>
+            <p class="tab-subtitle">Simple, transparent pricing. Fully local editing remains 100% free, forever.</p>
+            
+            <div class="pricing-modal-grid">
+              <div class="pricing-card">
+                <h4>Starter</h4>
+                <div class="price-val">$0<span>/mo</span></div>
+                <ul class="pricing-features">
+                  <li>✅ Local 100% processing</li>
+                  <li>✅ Drag/Drop/Paste Resiliency</li>
+                  <li>✅ Standard Blur & Solid options</li>
+                  <li>❌ AI Auto-Scanning</li>
+                </ul>
+                <button class="btn btn-secondary btn-full-width" disabled>Current Tier</button>
+              </div>
+              <div class="pricing-card card-premium">
+                <div class="card-ribbon">POPULAR</div>
+                <h4>Professional</h4>
+                <div class="price-val">$9<span>/mo</span></div>
+                <ul class="pricing-features">
+                  <li>✅ Everything in Starter</li>
+                  <li>✅ Unlimited AI Smart Scans</li>
+                  <li>✅ Bulk Editing & Batch upload</li>
+                  <li>✅ Priority Support & Custom assets</li>
+                </ul>
+                <button class="btn btn-primary btn-full-width" id="pricing-pro-btn">Upgrade to Pro</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 5. Auth Log In -->
+          <div class="modal-tab-content" id="tab-content-auth-login">
+            <h2>Welcome Back</h2>
+            <p class="tab-subtitle">Log in to manage your API keys, subscription, and custom masking pipelines.</p>
+            
+            <form class="auth-form" id="login-form">
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" required placeholder="name@company.com" class="form-input" id="login-email">
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" required placeholder="••••••••" class="form-input" id="login-password">
+              </div>
+              <button type="submit" class="btn btn-primary btn-full-width">Log In</button>
+            </form>
+            <p class="auth-switch-text">Don't have an account? <span class="link-switch" data-target="auth-signup" id="link-switch-to-signup">Create one free</span></p>
+          </div>
+          
+          <!-- 6. Auth Sign Up -->
+          <div class="modal-tab-content" id="tab-content-auth-signup">
+            <h2>Secure Your Workspace</h2>
+            <p class="tab-subtitle">Create a free developer account to access rate-limited API keys and plugins.</p>
+            
+            <form class="auth-form" id="signup-form">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" required placeholder="Alex Mercer" class="form-input" id="signup-name">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" required placeholder="name@company.com" class="form-input" id="signup-email">
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" required placeholder="At least 8 characters" class="form-input" id="signup-password">
+              </div>
+              <button type="submit" class="btn btn-primary btn-full-width">Create Account</button>
+            </form>
+            <p class="auth-switch-text">Already have an account? <span class="link-switch" data-target="auth-login" id="link-switch-to-login">Log in here</span></p>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <div id="agentation-root"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
