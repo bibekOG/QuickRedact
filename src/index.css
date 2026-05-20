@@ -1,1 +1,70 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #0F70E6;
+  --color-primary-hover: #0A5BC4;
+  --color-primary-soft: rgba(15, 112, 230, 0.08);
+  --color-text-main: #454545;
+  --color-text-secondary: #54616C;
+  --color-text-muted: #BAC0C4;
+  --color-border: #BAC0C4;
+  --color-surface-page: #F9FAFA;
+  --color-success: #008009;
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 200ms;
+}
+
+@keyframes canvas-load {
+  from {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-canvas-load {
+  animation: canvas-load 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-slide-in {
+  opacity: 0;
+  animation: fade-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pulsing-selection-border {
+  0%, 100% {
+    border-color: rgba(15, 112, 230, 0.4);
+  }
+  50% {
+    border-color: rgba(15, 112, 230, 0.7);
+  }
+}
+
+@keyframes redact-apply-flash {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.animate-redact-flash {
+  animation: redact-apply-flash 0.25s ease-in-out;
+}

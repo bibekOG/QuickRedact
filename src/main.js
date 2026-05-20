@@ -250,6 +250,26 @@ function init() {
       closeSaaSModal()
     })
   }
+
+  // Staggered Scroll-Triggered Feature Card Reveals
+  const stepCards = document.querySelectorAll('.step-card')
+  if (stepCards.length > 0) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          stepCards.forEach((card, index) => {
+            setTimeout(() => {
+              card.classList.add('animate-fade-slide-in')
+            }, index * 150)
+          })
+          obs.disconnect() // Only trigger once
+        }
+      })
+    }, { threshold: 0.15 })
+    
+    const stepsGrid = document.querySelector('.steps-grid')
+    if (stepsGrid) observer.observe(stepsGrid)
+  }
 }
 
 // --- SaaS Hub Modal Controllers ---
@@ -595,6 +615,7 @@ function handleMouseUp(e) {
       })
       selectedIndex = redactions.length - 1
       saveToHistory()
+      flashCanvas()
       redoStack = []
     }
   } else {
@@ -617,12 +638,12 @@ function render() {
     applyRedaction(r)
     if (index === selectedIndex) {
       ctx.save()
-      ctx.strokeStyle = '#4f46e5'
+      ctx.strokeStyle = '#0F70E6'
       ctx.lineWidth = 2
       ctx.setLineDash([5, 5])
       ctx.strokeRect(r.x, r.y, r.w, r.h)
       
-      ctx.fillStyle = '#4f46e5'
+      ctx.fillStyle = '#0F70E6'
       ctx.setLineDash([])
       const hs = HANDLE_SIZE
       ctx.fillRect(r.x - hs/2, r.y - hs/2, hs, hs)
@@ -699,19 +720,68 @@ function handleKeydown(e) {
   }
 }
 
-function showToast(message) {
+function showToast(message, type = '') {
   let toast = document.querySelector('.toast')
-  if (!toast) { toast = document.createElement('div'); toast.className = 'toast';
-  toast.setAttribute('role', 'alert'); document.body.appendChild(toast) }
-  toast.textContent = `✨ ${message}`; toast.classList.add('show')
-  setTimeout(() => toast.classList.remove('show'), 3000)
+  if (!toast) {
+    toast = document.createElement('div')
+    toast.className = 'toast'
+    toast.setAttribute('role', 'alert')
+    document.body.appendChild(toast)
+  }
+  
+  // Clean the message and identify icon type
+  let cleanMsg = message
+  let iconType = type
+
+  // If no explicit type, check if the message starts with a known emoji
+  if (!iconType) {
+    if (cleanMsg.startsWith('✅')) {
+      iconType = 'success'
+      cleanMsg = cleanMsg.replace(/^✅\s*/, '')
+    } else if (cleanMsg.startsWith('❌')) {
+      iconType = 'error'
+      cleanMsg = cleanMsg.replace(/^❌\s*/, '')
+    } else if (cleanMsg.startsWith('✨') || cleanMsg.startsWith('🚀') || cleanMsg.startsWith('🤖')) {
+      iconType = 'sparkle'
+      cleanMsg = cleanMsg.replace(/^[✨🚀🤖]\s*/, '')
+    } else if (cleanMsg.startsWith('💡')) {
+      iconType = 'info'
+      cleanMsg = cleanMsg.replace(/^💡\s*/, '')
+    } else {
+      iconType = 'info'
+    }
+  } else {
+    // Map emoji in type to standard types
+    if (iconType === '✅') iconType = 'success'
+    else if (iconType === '❌') iconType = 'error'
+    else if (iconType === '✨' || iconType === '🚀' || iconType === '🤖') iconType = 'sparkle'
+    else if (iconType === '💡') iconType = 'info'
+  }
+
+  // Create standard SVG icon based on the iconType
+  let svgIcon = ''
+  if (iconType === 'success') {
+    svgIcon = `<svg class="toast-icon success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+  } else if (iconType === 'error') {
+    svgIcon = `<svg class="toast-icon error" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`
+  } else if (iconType === 'sparkle') {
+    svgIcon = `<svg class="toast-icon sparkle" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F70E6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707-.707M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"></path></svg>`
+  } else {
+    svgIcon = `<svg class="toast-icon info" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+  }
+
+  toast.innerHTML = `<div class="toast-content">${svgIcon}<span class="toast-text">${cleanMsg}</span></div>`
+  toast.classList.add('show')
+  
+  if (window.toastTimeout) clearTimeout(window.toastTimeout)
+  window.toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000)
 }
 
 function copyToClipboard() {
   selectedIndex = -1; render()
   const origText = copyBtn.innerHTML
   copyBtn.classList.add('btn-success')
-  copyBtn.innerHTML = '<span>Copied!</span> <span>✅</span>'
+  copyBtn.innerHTML = '<span>Copied!</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-left: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>'
   setTimeout(() => {
     copyBtn.classList.remove('btn-success')
     copyBtn.innerHTML = origText

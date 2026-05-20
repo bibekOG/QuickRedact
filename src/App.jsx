@@ -62,7 +62,7 @@ export default function App() {
       />
 
       {/* 1. Floating Top Toolbar */}
-      <div className="flex items-center justify-between bg-white rounded-full px-5 py-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/80 gap-6 w-full max-w-[820px] mx-auto mt-2">
+      <div className="flex items-center justify-between bg-white rounded-full px-5 py-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100/80 gap-6 w-full max-w-[820px] mx-auto mt-2 animate-fade-slide-in">
         
         {/* Left Tools (Gray text/icons) */}
         <div className="flex items-center gap-6 pl-2">
@@ -136,7 +136,7 @@ export default function App() {
           {/* Download Button */}
           <button 
             onClick={handleDownload}
-            className="flex items-center gap-1 bg-[#0070f3] text-white rounded-full px-5 py-2.2 text-[13.5px] font-semibold shadow-[0_4px_12px_rgba(0,112,243,0.22)] hover:bg-[#0060d3] hover:shadow-[0_6px_16px_rgba(0,112,243,0.3)] transition-all cursor-pointer"
+            className="flex items-center gap-1 bg-[#0F70E6] text-white rounded-full px-5 py-2.2 text-[13.5px] font-semibold shadow-[0_4px_12px_rgba(15,112,230,0.22)] hover:bg-[#0A5BC4] hover:shadow-[0_6px_16px_rgba(15,112,230,0.3)] transition-all cursor-pointer"
           >
             <span>Download</span>
             <ChevronDown size={14} className="stroke-[2.5]" />
@@ -158,7 +158,7 @@ export default function App() {
         />
 
         {/* Main Subject Content (Dynamic cutout / uploaded image) */}
-        <div className="relative z-10 w-[78%] h-[78%] flex items-center justify-center">
+        <div key={imageSrc} className="relative z-10 w-[78%] h-[78%] flex items-center justify-center animate-canvas-load">
           <img 
             src={imageSrc} 
             alt="Subject Cutout" 
@@ -190,7 +190,7 @@ export default function App() {
       </div>
 
       {/* 3. Bottom Thumbnail Bar */}
-      <div className="flex items-center gap-3.5 mt-2 mb-1 z-10">
+      <div className="flex items-center gap-3.5 mt-2 mb-1 z-10 animate-fade-slide-in">
         
         {/* Add Button (+) */}
         <button 
@@ -202,7 +202,7 @@ export default function App() {
         </button>
 
         {/* Active Thumbnail */}
-        <div className="h-12 w-12 rounded-[14px] relative cursor-pointer border-[2.2px] border-[#0070f3] bg-white shadow-sm flex items-center justify-center">
+        <div className="h-12 w-12 rounded-[14px] relative cursor-pointer border-[2.2px] border-[#0F70E6] bg-white shadow-sm flex items-center justify-center">
           {/* Inner Thumbnail Content */}
           <div 
             className="w-full h-full rounded-[11px] overflow-hidden" 
