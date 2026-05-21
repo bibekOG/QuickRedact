@@ -9,8 +9,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css">
   </head>
   <body class="bg-[#f9fafb] text-gray-900 font-sans antialiased min-h-screen">
+    <nav class="navbar animate-fade-slide-in delay-1">
+      <div class="nav-container">
+        <a href="/#home" class="nav-logo">
+          <svg class="logo-icon-svg" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2L3 8L14 14L25 8L14 2Z" fill="#0F70E6" />
+            <path d="M3 13L14 19L25 13" stroke="#3B9BF5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M3 18L14 24L25 18" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span class="logo-text"><span class="brand-bold">quick</span><span class="brand-light">redact</span></span>
+        </a>
+        
+        <div class="nav-links">
+          <a href="/#uploads" class="nav-link-item">Remove Data</a>
+          <a href="/#how-to" class="nav-link-item">How to use</a>
+          <a href="/#about" class="nav-link-item">About us</a>
+        </div>
+
+        <div class="nav-right-section">
+          <a href="/#uploads" class="nav-redact-btn">Redact Now</a>
+        </div>
+      </div>
+    </nav>
+
+    <div id="agentation-root"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
